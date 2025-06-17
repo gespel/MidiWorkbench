@@ -1,5 +1,6 @@
 import pygame.midi
 import time
+import librosa
 
 def list_midi_devices():
     pygame.midi.init()
@@ -17,14 +18,21 @@ def list_midi_devices():
 def send_midi_sequence(device_id):
     player = pygame.midi.Output(device_id)
     print(f"Sende Sequenz an Gerät {device_id}")
+    notes = [note_to_midi_nr("c3"), note_to_midi_nr("d3"), note_to_midi_nr("c#3")]
+    print(notes)
 
-    notes = [60, 62, 64, 65, 67, 69, 71, 72]  # C-Dur
-    for note in notes:
-        player.note_on(note, velocity=100)
-        time.sleep(0.3)
-        player.note_off(note, velocity=100)
-
+    while True:
+        print("Sending")
+        for note in notes:
+            player.note_on(note, velocity=100)
+            time.sleep(0.1)
+            player.note_off(note, velocity=100)
     player.close()
+
+def note_to_midi_nr(note):
+    return int(librosa.note_to_midi(note))
+
+    
 
 if __name__ == "__main__":
     devices = list_midi_devices()
